@@ -1,13 +1,17 @@
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Scanner;
 
 public class NBA {
     private static int numberOfFields = 7;
 
     public static void main(String[] args) throws FileNotFoundException {
+        System.out.println("West:\n\n");
         handleInputNBAFile("src/nba_west.in");
+        System.out.println("\n\nEast:\n\n");
+        handleInputNBAFile("src/nba_east.in");
     }
 
     public static void handleInputNBAFile(String path) throws FileNotFoundException {
@@ -21,12 +25,46 @@ public class NBA {
             teamsRepresentation [i] = teams[i].split(";");
         }
 
-        for (int i = 0; i < teamsRepresentation.length; i++) {
-            System.out.println(Arrays.toString(teamsRepresentation[i]));
+        Arrays.sort(teamsRepresentation, new Comparator<String[]>() {
+            @Override
+            public int compare(String[] o1, String[] o2) {
+                return tryParseInt(o2[2], 0) - tryParseInt(o1[2], 0);
+            }
+        });
+
+        int topWins = tryParseInt(teamsRepresentation[0][2], 0);
+
+        System.out.println("Most wins");
+
+        for (String[] t : teamsRepresentation) {
+            if (tryParseInt(t[2], 0) != topWins) {
+                break;
+            }
+
+            System.out.println(t [1]);
+        }
+
+        Arrays.sort(teamsRepresentation, new Comparator<String[]>() {
+            @Override
+            public int compare(String[] o1, String[] o2) {
+                return tryParseInt(o2[3], 0) - tryParseInt(o1[3], 0);
+            }
+        });
+
+        int topLoses = tryParseInt(teamsRepresentation[0][3], 0);
+
+        System.out.println("Most loses");
+
+        for (String[] t : teamsRepresentation) {
+            if (tryParseInt(t[3], 0) != topLoses) {
+                break;
+            }
+
+            System.out.println(t [1]);
         }
     }
 
-    public int tryParseInt(String value, int defaultVal) {
+    public static int tryParseInt(String value, int defaultVal) {
         try {
             return Integer.parseInt(value);
         } catch (NumberFormatException e) {
